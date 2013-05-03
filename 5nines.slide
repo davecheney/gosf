@@ -1,0 +1,20 @@
+Go and Juju at Canonical
+
+Dave Cheney
+Canonical
+http://dave.cheney.net/
+@davecheney
+
+* Overview
+
+What is Juju ?
+
+How does Juju deal with unreliable services
+
+How do we use Go to make Juju reliable.
+
+* What does Juju do ?
+
+Service Orchestration
+
+
