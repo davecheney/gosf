@@ -11,11 +11,8 @@ http://dave.cheney.net/
 * Who is ths guy ?
 
 - I work for Canonical developing Juju in Go
-
 - ARM enthusiast
-
 - Contributor since Feb 2011
-
 - Committer since April 2012
 
 * Overview
@@ -23,77 +20,56 @@ http://dave.cheney.net/
 This is a talk in three parts
 
 - What is Juju ?
-
 - How does Juju deal with unreliable services
-
 - How do we use Go to make Juju reliable.
 
 * What is Juju ?
 
 Before I can talk about how we use Go to build Juju, I need to spend a few minutes explaining Juju.
 
-- Not a sales presentation
+* Not a sales presentation
 
-* What does Juju do ?
-
-- Service Orchestration
-
-- Not host configuration
+* Service Orchestration not host configuration
 
 * Not host configuration ?
 
 - Hosts are disposable 
-
 - Host setup is expected to be handled by the provider or baked into the VM image.
-
 - (MaaS is the exception not the rule)
-
 - Raw tin runs the same image as the virtual machine, on the process of bootup is different.
 
-* Services (1 of 2)
+* Services
 
 - Unlike Chef or Puppet, Juju treats the Service, not the Host, as the central data type.
-
-* Services (2 of 2)
+- Services are deployed into an Environment
 
 * Environments
 
-A Environment is a collection of Services running on an provider like
+An Environment is a collection of Services running on an provider like
 
 - HP Cloud
-
 - EC2
-
 - MaaS
-
 - Openstack 
 
-* Relations (1 of 2)
-
-- Services are related to one another.
-
-- Relations are a form of bidirectional dependency
-
-* Relations (2 of 2)
-
-- Services can query details about other services once a relation has been established.
-
-* Charms (1 of 2)
+* Charms (1/2)
 
 - Services are an instance of a Charm.
 
     % juju deploy cs:precise/mysql mydatabase
-   
+    
     % juju deploy mysql mydatabase
 
     % juju deploy mysql
 
-* Charms (2 of 2)
+* Charms (2/2)
 
-- just a tgz
+- just a zip file
+
+    % file ~/.juju/cache/cs_3a_precise_2f_wordpress-11.charm 
+    /home/dfc/.juju/cache/cs_3a_precise_2f_wordpress-11.charm: Zip archive data, at least v2.0 to extract
 
 - files named for verbs; install, start, relation-add
-
 - charms can get details of the environment via shell commands
 
     database=`relation-get database`
@@ -103,12 +79,16 @@ A Environment is a collection of Services running on an provider like
 
 - charms actually one command, use the os.Args[0] trick.
 
+* Relations
+
+- Services are related to one another.
+- Relations are a form of bidirectional dependency
+- Services can query details about other services once a relation has been established.
+
 * Units
 
 - Unit is an instance of a Service
-
 - Deployed into a VM provided for it
-
 - This usually means a new VM will booted up to handle the Unit.
 
 * End of part 1
@@ -133,6 +113,6 @@ Juju has three parts
 
 - Juju cli alters the data representing the Environment stored in Mongo.
 
-- Agetns running on various machines inside the Environment observe these changes and react by running a Charm hook.
+- Agents running on various machines inside the Environment observe these changes and react by running a Charm hook.
 
 
