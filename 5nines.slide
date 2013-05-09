@@ -11,9 +11,10 @@ http://dave.cheney.net/
 * Who is ths guy ?
 
 - I work for Canonical developing Juju in Go
+- Co-organiser of the Golang-Syd meetup group with @eneff
+- Go Contributor since Feb 2011
+- Go Committer since April 2012
 - ARM enthusiast
-- Contributor since Feb 2011
-- Committer since April 2012
 
 * Overview
 
@@ -29,19 +30,24 @@ Before I can talk about how we use Go to build Juju, I need to spend a few minut
 
 * Not a sales presentation
 
+Come see me afterwards if you _do_ want a sales presentation.
+
 * Service Orchestration not host configuration
+
+Juju isn't like Chef or Puppet.
 
 * Not host configuration ?
 
 - Hosts are disposable 
-- Host setup is expected to be handled by the provider or baked into the VM image.
-- (MaaS is the exception not the rule)
-- Raw tin runs the same image as the virtual machine, on the process of bootup is different.
+- Deployments live from minutes to years.
+- Host setup is expected to be handled by the provider or baked into the boot image.
+- If you need a package to installed, Juju charms can handle that for you.
+- If you need a config file to be edited, Juju charms can handle that as well.
 
 * Services
 
 - Unlike Chef or Puppet, Juju treats the Service, not the Host, as the central data type.
-- Services are deployed into an Environment
+- A bunch of related Services deployed together are called an Environment.
 
 * Environments
 
@@ -52,50 +58,62 @@ An Environment is a collection of Services running on an provider like
 - MaaS
 - Openstack 
 
+- more to come
+
 * Charms (1/2)
 
 - Services are an instance of a Charm.
 
     % juju deploy cs:precise/mysql mydatabase
-    
-    % juju deploy mysql mydatabase
 
-    % juju deploy mysql
+Output
+
+    % juju status
+     ...
+    services:
+      mydatabase:
+        charm: cs:precise/mysql-19
+        exposed: false
+      units:
+        mydatabase/0:
+          agent-state: installed
+          agent-version: 1.11.0.1
+          machine: "1"
+          public-address: ec2-54-241-77-25.us-west-1.compute.amazonaws.com
 
 * Charms (2/2)
 
 - just a zip file
 
     % file ~/.juju/cache/cs_3a_precise_2f_wordpress-11.charm 
-    /home/dfc/.juju/cache/cs_3a_precise_2f_wordpress-11.charm: Zip archive data, at least v2.0 to extract
+    /home/dfc/.juju/cache/cs_3a_precise_2f_wordpress-11.charm: Zip archive data
 
-- files named for verbs; install, start, relation-add
+- files named for verbs; install, start, config-changed
 - charms can get details of the environment via shell commands
 
-    database=`relation-get database`
-    user=`relation-get user`
-    password=`relation-get password`
-    host=`relation-get private-address`
-
-- charms actually one command, use the os.Args[0] trick.
+.code 5nines/config-changed /START OMIT/,/END OMIT/
 
 * Relations
 
-- Services are related to one another.
+- Services are related to one another
 - Relations are a form of bidirectional dependency
 - Services can query details about other services once a relation has been established.
 
 * Units
 
-- Unit is an instance of a Service
-- Deployed into a VM provided for it
+- A Unit is an instance of a Service
+- Deployed into a machine provided for it in the Environment.
 - This usually means a new VM will booted up to handle the Unit.
+
+* Putting it all together
+
+.code 5nines/juju-status.txt 
 
 * End of part 1
 
 So, that was the theory, now on to the implementation.
 
-* The implementation
+* The implementation 
 
 Juju has three parts
 
@@ -109,10 +127,40 @@ Juju has three parts
 
     juju cli
 
-* The implementation (2)
+* The implementation (cont.)
 
-- Juju cli alters the data representing the Environment stored in Mongo.
+At last count, 92k lines of code (182k inc tests), including dependencies developed by Canonical.
+
+- labix.org/v2/mgo
+- launchpad.net/gnuflag
+- launchpad.net/goamz
+- launchpad.net/gocheck
+- launchpad.net/gomaasapi
+- launchpad.net/goose
+- launchpad.net/goyaml
+- launchpad.net/tomb
+
+* The implementation (cont.)
+
+- Juju cli alters the data representing the Environment stored in the Mongo database.
 
 - Agents running on various machines inside the Environment observe these changes and react by running a Charm hook.
 
+- Everything is asynchronous.
 
+- Almost no timeouts.
+
+* Waiting (1/2)
+
+.code 5nines/provisioner.go /START OMIT/,/END OMIT/
+
+* Waiting (2/2)
+
+.code 5nines/provisioner_test.go /STARTb OMIT/,/ENDb OMIT/
+
+* Thank you
+
+- Special thanks to @rogpeppe who helped me a _lot_ with my presentation.
+
+- Huge thanks to Gary Burd for his talks.godoc.org subsite. This presentation is
+.link http://talks.godoc.org/github.com/davecheney/gosf/5nines.slide
