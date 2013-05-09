@@ -8,10 +8,10 @@ dave@cheney.net
 http://dave.cheney.net/
 @davecheney
 
-* Who is ths guy ?
+* Who is this guy ?
 
 - I work for Canonical developing Juju in Go
-- Co-organiser of the Golang-Syd meetup group with @eneff
+- Co-organiser of the Sydney Go meetup group with @enneff
 - Go Contributor since Feb 2011
 - Go Committer since April 2012
 - ARM enthusiast
@@ -21,7 +21,7 @@ http://dave.cheney.net/
 This is a talk in two parts
 
 - What is Juju ?
-- What are the features of Go we use to make Juju reliable ?
+- What are some of the features of Go we use to make Juju reliable ?
 
 * What is Juju ?
 
@@ -47,6 +47,7 @@ Juju isn't like Chef or Puppet.
 
 - Unlike Chef or Puppet, Juju treats the Service, not the Host, as the central data type.
 - A bunch of related Services deployed together are called an Environment.
+- You describe your Services and how they interrelate and Juju does the rest.
 
 * Environments
 
@@ -94,15 +95,16 @@ Output
 
 * Relations
 
-- Services are related to one another
-- Relations are a form of bidirectional dependency
+- Services are related to one another.
+- Relations are a form of bidirectional dependency.
+- Relations allow Services to discover configuration.
 - Services can query details about other services once a relation has been established.
 
 * Units
 
-- A Unit is an instance of a Service
+- A Unit is an instance of a Service.
 - Deployed into a machine provided for it in the Environment.
-- This usually means a new VM will booted up to handle the Unit.
+- This usually means a new machine will booted up to handle the Unit.
 
 * Putting it all together
 
@@ -142,24 +144,22 @@ At last count, 92k lines of code (182k inc tests), including dependencies develo
 * The implementation (cont.)
 
 - Juju cli alters the data representing the Environment stored in the Mongo database.
-
 - Agents running on various machines inside the Environment observe these changes and react by running a Charm hook.
-
+- Juju Agents are constructed from many goroutines (jobs) selected at runtime for a particular agent role.
 - Everything is asynchronous.
 
-- Almost no timeouts.
+* Two small things
 
-* Stopping and starting with Tombs
+- Tombs
+- Watchers
 
-Juju agents are constructed from many goroutines.
+* Stopping with Tombs
 
 For reliable operation we need to
 
-- Monitor the status of those goroutines
-
-- Be able to stop them when needed
-
-- Know when they _have_ stopped
+- Monitor the status of worker goroutines.
+- Be able to stop them when needed.
+- Know when they _have_ stopped.
 
 * A contrived example
 
@@ -173,9 +173,18 @@ For reliable operation we need to
 
 .play 5nines/stopping3.go /START OMIT/,/END OMIT/
 
-* Returing a status
+* Returning a status
 
 .play 5nines/stopping4.go /START OMIT/,/END OMIT/
+
+* Watching, always watching
+
+.code 5nines/watcher.txt
+
+* Watchers, really just Tombs
+
+.code 5nines/watcher.go /STARTa OMIT/,/ENDa OMIT/
+.code 5nines/watcher.go /STARTb OMIT/,/ENDb OMIT/
 
 * Some real code
 
@@ -185,5 +194,7 @@ For reliable operation we need to
 
 - Special thanks to @rogpeppe who helped me a _lot_ with my presentation.
 
-- Huge thanks to Gary Burd for his talks.godoc.org subsite. This presentation is
+- Big thanks to @enneff for the sweet present tool.
+
+- Huge thanks to Gary Burl for his talks.godoc.org subsite. This presentation is
 .link http://talks.godoc.org/github.com/davecheney/gosf/5nines.slide
