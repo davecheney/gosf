@@ -11,6 +11,7 @@ type Worker struct {
 
 func (w *Worker) run() {
 	defer w.Tomb.Done()
+	defer fmt.Println("All done")
 	for {
 		select {
 		case <-w.Tomb.Dying():

@@ -23,8 +23,7 @@ func (w *Worker) run() {
 func main() {
 	w := &Worker{stop: make(chan struct{})}
 	go w.run()
-	<-time.After(300 * time.Millisecond)
+	time.Sleep(300 * time.Millisecond)
 	close(w.stop)
 }
-
 // END OMIT

@@ -89,7 +89,7 @@ Output
     /home/dfc/.juju/cache/cs_3a_precise_2f_wordpress-11.charm: Zip archive data
 
 - files named for verbs; install, start, config-changed
-- charms can get details of the environment via shell commands
+- Charms can get details of their configuration via shell commands
 
 .code 5nines/config-changed /START OMIT/,/END OMIT/
 

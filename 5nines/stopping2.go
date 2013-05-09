@@ -27,7 +27,7 @@ func main() {
 	w := &Worker{stop: make(chan struct{})}
 	w.wg.Add(1)
 	go w.run()
-	<-time.After(300 * time.Millisecond)
+	time.Sleep(300 * time.Millisecond)
 	close(w.stop)
 	w.wg.Wait()	
 }
