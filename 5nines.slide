@@ -18,11 +18,10 @@ http://dave.cheney.net/
 
 * Overview
 
-This is a talk in three parts
+This is a talk in two parts
 
 - What is Juju ?
-- How does Juju deal with unreliable services
-- How do we use Go to make Juju reliable.
+- What are the features of Go we use to make Juju reliable ?
 
 * What is Juju ?
 
@@ -150,13 +149,37 @@ At last count, 92k lines of code (182k inc tests), including dependencies develo
 
 - Almost no timeouts.
 
-* Waiting (1/2)
+* Stopping and starting with Tombs
+
+Juju agents are constructed from many goroutines.
+
+For reliable operation we need to
+
+- Monitor the status of those goroutines
+
+- Be able to stop them when needed
+
+- Know when they _have_ stopped
+
+* A contrived example
+
+.play 5nines/stopping1.go /START OMIT/,/END OMIT/
+
+* Improved example
+
+.play 5nines/stopping2.go /START OMIT/,/END OMIT/
+
+* Rewritten using a Tomb
+
+.play 5nines/stopping3.go /START OMIT/,/END OMIT/
+
+* Returing a status
+
+.play 5nines/stopping4.go /START OMIT/,/END OMIT/
+
+* Some real code
 
 .code 5nines/provisioner.go /START OMIT/,/END OMIT/
-
-* Waiting (2/2)
-
-.code 5nines/provisioner_test.go /STARTb OMIT/,/ENDb OMIT/
 
 * Thank you
 
