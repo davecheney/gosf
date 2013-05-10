@@ -1,7 +1,20 @@
 package main
 
-import "fmt"
-import "launchpad.net/tomb"
+import (
+	"fmt"
+	"launchpad.net/tomb"
+	"math/rand"
+)
+
+var conn = make(chan int)
+
+func init() {
+	go func() {
+		for {
+			conn <- rand.Intn(10)
+		}
+	}()
+}
 
 // START OMIT
 type Worker struct {
@@ -10,25 +23,25 @@ type Worker struct {
 
 func (w *Worker) run() {
 	defer w.Tomb.Done()
-	a, b := make(chan bool), make(chan bool)
-	close(a); close(b)
 	for {
-		select {
-		case <-a:
-			w.Tomb.Kill(fmt.Errorf("a"))
+		switch v := <-conn; v {
+		case 0:
+			w.Tomb.Killf("error! got a zero")
 			return
-		case <-b:
-			w.Tomb.Kill(fmt.Errorf("b"))
+		case 1:
 			return
+		default:
+			// continue
 		}
 	}
 }
 
 func main() {
 	for i := 0; i < 10; i++ {
-		w := &Worker{}
+		var w Worker
 		go w.run()
-		fmt.Printf("Worker exited: %v\n", w.Tomb.Wait())
+		fmt.Printf("Worker exited: %v\n", w.Wait())
 	}
 }
+
 // END OMIT

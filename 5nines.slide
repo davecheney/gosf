@@ -46,7 +46,7 @@ Juju isn't like Chef or Puppet.
 * Services
 
 - Unlike Chef or Puppet, Juju treats the Service, not the Host, as the central data type.
-- A bunch of related Services deployed together are called an Environment.
+- A bunch of Services deployed together are called an Environment.
 - You describe your Services and how they interrelate and Juju does the rest.
 
 * Environments
@@ -81,17 +81,19 @@ Output
           machine: "1"
           public-address: ec2-54-241-77-25.us-west-1.compute.amazonaws.com
 
-* Charms (2/2)
+* Charms (cont.)
 
 - just a zip file
 
     % file ~/.juju/cache/cs_3a_precise_2f_wordpress-11.charm 
     /home/dfc/.juju/cache/cs_3a_precise_2f_wordpress-11.charm: Zip archive data
 
-- files named for verbs; install, start, config-changed
+- Hooks named for verbs; install, start, config-changed
 - Charms can get details of their configuration via shell commands
 
 .code 5nines/config-changed /START OMIT/,/END OMIT/
+
+- Charms can be written in any language you want. Shell, Python, Ruby, PHP, ...
 
 * Relations
 
@@ -124,13 +126,13 @@ Juju has three parts
 
     jujud agents, jujuc tools
 
-- Client slide tools
+- Client side tools
 
     juju cli
 
 * The implementation (cont.)
 
-At last count, 92k lines of code (182k inc tests), including dependencies developed by Canonical.
+At last count, 85k lines of code (182k inc tests), including dependencies developed by Canonical.
 
 - labix.org/v2/mgo
 - launchpad.net/gnuflag
@@ -153,7 +155,7 @@ At last count, 92k lines of code (182k inc tests), including dependencies develo
 - Tombs
 - Watchers
 
-* Stopping with Tombs
+* Managing goroutines with Tombs
 
 For reliable operation we need to
 
@@ -173,7 +175,7 @@ For reliable operation we need to
 
 .play 5nines/stopping3.go /START OMIT/,/END OMIT/
 
-* Returning a status
+* Returning a value
 
 .play 5nines/stopping4.go /START OMIT/,/END OMIT/
 
@@ -196,5 +198,8 @@ For reliable operation we need to
 
 - Big thanks to @enneff for the sweet present tool.
 
-- Huge thanks to Gary Burl for his talks.godoc.org subsite. This presentation is
+- Huge thanks to Gary Burd for his talks.godoc.org subsite. This presentation is
 .link http://talks.godoc.org/github.com/davecheney/gosf/5nines.slide
+
+- Check out Juju, it's open source.
+.link https://launchpad.net/juju-core 

@@ -29,4 +29,5 @@ func main() {
 	w.Tomb.Kill(nil) // normal exit
 	w.Tomb.Wait()
 }
+
 // END OMIT

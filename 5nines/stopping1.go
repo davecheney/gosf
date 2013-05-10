@@ -26,4 +26,5 @@ func main() {
 	time.Sleep(300 * time.Millisecond)
 	close(w.stop)
 }
+
 // END OMIT

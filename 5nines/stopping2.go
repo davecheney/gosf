@@ -7,7 +7,7 @@ import "sync"
 // START OMIT
 type Worker struct {
 	stop chan struct{}
-	wg sync.WaitGroup
+	wg   sync.WaitGroup
 }
 
 func (w *Worker) run() {
@@ -15,7 +15,7 @@ func (w *Worker) run() {
 	for {
 		select {
 		case <-w.stop:
-			w.wg.Done()	
+			w.wg.Done()
 			return
 		case <-time.After(100 * time.Millisecond):
 			fmt.Println("Waited 100ms")
@@ -29,6 +29,7 @@ func main() {
 	go w.run()
 	time.Sleep(300 * time.Millisecond)
 	close(w.stop)
-	w.wg.Wait()	
+	w.wg.Wait()
 }
+
 // END OMIT
