@@ -11,11 +11,11 @@ type Worker struct {
 }
 
 func (w *Worker) run() {
+	defer w.wg.Done()
 	defer fmt.Println("All done")
 	for {
 		select {
 		case <-w.stop:
-			w.wg.Done()
 			return
 		case <-time.After(100 * time.Millisecond):
 			fmt.Println("Waited 100ms")
